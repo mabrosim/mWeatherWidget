@@ -45,7 +45,9 @@ import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Implementation of App Widget functionality.
@@ -59,19 +61,6 @@ public class WeatherWidget extends AppWidgetProvider {
     private static final String UPDATE_INTERVAL_EXPIRED = "com.mmmm.weather_widget" +
             ".UPDATE_INTERVAL_EXPIRED";
     private static final String CLICK = "com.mmmm.weather_widget.CLICK";
-
-
-    private static void setDummyTexts(Context context) {
-        ComponentName thisWidget = new ComponentName(context, WeatherWidget.class);
-        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-
-        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.weatherwidget);
-        views.setTextViewText(R.id.tvTempNow, "-- °C");
-        views.setTextViewText(R.id.tv_MinTemp, "MIN");
-        views.setTextViewText(R.id.tv_MaxTemp, "MAX");
-
-        appWidgetManager.updateAppWidget(thisWidget, views);
-    }
 
     static void setBackgroundColor(Context context, String c) {
         Log.d(TAG, "setBackgroundColor: " + c);
@@ -87,8 +76,11 @@ public class WeatherWidget extends AppWidgetProvider {
     }
 
     private void getWeatherData(final Context context) {
-        WeatherWidget.setDummyTexts(context);
         Log.d(TAG, "getWeatherData");
+
+        WeatherData.getInstance().setValid(false);
+        updateWeatherWidget(context);
+
         GetHTMLTask task = new GetHTMLTask(new GetHTMLTask.OnTaskCompleted() {
             @Override
             public void onTaskCompleted() {
@@ -101,18 +93,31 @@ public class WeatherWidget extends AppWidgetProvider {
         task.execute(WeatherData.URL);
     }
 
-    void updateWeatherWidget(Context context) {
+    private String getClockTime() {
+        return new SimpleDateFormat("HH:mm").format(new Date());
+    }
+
+    private void updateWeatherWidget(Context context) {
         ComponentName thisWidget = new ComponentName(context, getClass());
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.weatherwidget);
-
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, new Intent(CLICK), 0);
-        views.setOnClickPendingIntent(R.id.layoutWidget, pendingIntent);
-
+        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.weatherwidget);
         WeatherData wd = WeatherData.getInstance();
-        views.setTextViewText(R.id.tvTempNow, wd.getNowTemp() + " °C");
-        views.setTextViewText(R.id.tv_MinTemp, wd.getMinTemp() + "°");
-        views.setTextViewText(R.id.tv_MaxTemp, wd.getMaxTemp() + "°");
+
+        if (!wd.isValid()) {
+            views.setTextViewText(R.id.tvTempNow,
+                    context.getResources().getString(R.string.appwidget_text));
+            views.setTextViewText(R.id.tv_MinTemp,
+                    context.getResources().getString(R.string.default_min));
+            views.setTextViewText(R.id.tv_MaxTemp,
+                    context.getResources().getString(R.string.default_max));
+        } else {
+            views.setTextViewText(R.id.tvTempNow, wd.getNowTemp() + " \u00B0C");
+            views.setTextViewText(R.id.tv_MinTemp, String.valueOf(wd.getMinTemp()));
+            views.setTextViewText(R.id.tv_MaxTemp, String.valueOf(wd.getMaxTemp()));
+            views.setTextViewText(R.id.textTimestamp, getClockTime());
+        }
+        views.setOnClickPendingIntent(R.id.layoutWidget, pendingIntent);
 
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(thisWidget, views);
@@ -123,7 +128,7 @@ public class WeatherWidget extends AppWidgetProvider {
                 .LAYOUT_INFLATER_SERVICE);
         View layout = inflater.inflate(R.layout.toast_custom_layout, null);
         Toast toast = new Toast(context);
-        toast.setDuration(Toast.LENGTH_SHORT);
+        toast.setDuration(Toast.LENGTH_LONG);
         toast.setView(layout);
         toast.show();
     }

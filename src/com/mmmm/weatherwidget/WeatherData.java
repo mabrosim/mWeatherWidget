@@ -37,6 +37,7 @@ public class WeatherData {
     private float mMaxTemp;
     private int mClicks = 0;
     private boolean mShowHint = true;
+    private boolean mValid = false;
 
     private WeatherData() {
     }
@@ -83,6 +84,14 @@ public class WeatherData {
 
     public void setShowHint(boolean mShowHint) {
         this.mShowHint = mShowHint;
+    }
+
+    public boolean isValid() {
+        return mValid;
+    }
+
+    public void setValid(boolean isValid) {
+        this.mValid = isValid;
     }
 }
 
