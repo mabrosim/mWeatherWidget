@@ -85,15 +85,15 @@
         android:textSize="12dp"/>
 
     <TextView
+        android:id="@+id/textTimestamp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="@string/timestamp"
-        android:id="@+id/textTimestamp"
-        android:textColor="@android:color/darker_gray"
-        android:textSize="8dp"
         android:layout_below="@+id/tvTempNow"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="-2dp"/>
+        android:layout_marginTop="-2dp"
+        android:text="@string/timestamp"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="8dp"/>
 
 </RelativeLayout>

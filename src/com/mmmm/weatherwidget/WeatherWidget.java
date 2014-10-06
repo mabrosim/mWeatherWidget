@@ -42,6 +42,7 @@ import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
@@ -78,7 +79,7 @@ public class WeatherWidget extends AppWidgetProvider {
     private void getWeatherData(final Context context) {
         Log.d(TAG, "getWeatherData");
 
-        WeatherData.getInstance().setValid(false);
+        WeatherData.getInstance().invalidate();
         updateWeatherWidget(context);
 
         GetHTMLTask task = new GetHTMLTask(new GetHTMLTask.OnTaskCompleted() {
@@ -104,19 +105,11 @@ public class WeatherWidget extends AppWidgetProvider {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.weatherwidget);
         WeatherData wd = WeatherData.getInstance();
 
-        if (!wd.isValid()) {
-            views.setTextViewText(R.id.tvTempNow,
-                    context.getResources().getString(R.string.appwidget_text));
-            views.setTextViewText(R.id.tv_MinTemp,
-                    context.getResources().getString(R.string.default_min));
-            views.setTextViewText(R.id.tv_MaxTemp,
-                    context.getResources().getString(R.string.default_max));
-        } else {
-            views.setTextViewText(R.id.tvTempNow, wd.getNowTemp() + " \u00B0C");
-            views.setTextViewText(R.id.tv_MinTemp, String.valueOf(wd.getMinTemp()));
-            views.setTextViewText(R.id.tv_MaxTemp, String.valueOf(wd.getMaxTemp()));
-            views.setTextViewText(R.id.textTimestamp, getClockTime());
-        }
+        views.setTextViewText(R.id.tvTempNow, wd.getTempString());
+        views.setTextViewText(R.id.tv_MinTemp, wd.getTempString(WeatherData.MIN_TEMP));
+        views.setTextViewText(R.id.tv_MaxTemp, wd.getTempString(WeatherData.MAX_TEMP));
+        views.setTextViewText(R.id.textTimestamp, getClockTime());
+
         views.setOnClickPendingIntent(R.id.layoutWidget, pendingIntent);
 
         // Instruct the widget manager to update the widget
@@ -126,7 +119,7 @@ public class WeatherWidget extends AppWidgetProvider {
     private void showToast(Context context) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context
                 .LAYOUT_INFLATER_SERVICE);
-        View layout = inflater.inflate(R.layout.toast_custom_layout, null);
+        View layout = inflater.inflate(R.layout.toast_custom_layout, new LinearLayout(context));
         Toast toast = new Toast(context);
         toast.setDuration(Toast.LENGTH_LONG);
         toast.setView(layout);
@@ -197,12 +190,9 @@ public class WeatherWidget extends AppWidgetProvider {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d(TAG, "onReceive " + intent.getAction());
-
         if (intent.getAction().equals(CLICK)) {
             handleClickAction(context);
-        }
-        if (intent.getAction().equals(UPDATE_INTERVAL_EXPIRED)) {
+        } else if (intent.getAction().equals(UPDATE_INTERVAL_EXPIRED)) {
             handleUpdateAction(context);
         }
         super.onReceive(context, intent);

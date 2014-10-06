@@ -64,29 +64,25 @@ class GetHTMLTask extends AsyncTask<String, Void, Void> {
         listener.onTaskCompleted();
     }
 
-    private String parseTempFromHtml(String s, String search_template) {
+    private Float parseTempFromHtml(String s, String search_template) {
         int index = s.indexOf(search_template);
 
         if (index != -1) {
             int temp_index_starts = index + search_template.length();
-            return s.substring(temp_index_starts, temp_index_starts + 4).trim();
+            return Float.parseFloat(s.substring(temp_index_starts, temp_index_starts + 4));
         } else
-            return null;
+            return Float.NaN;
     }
 
     private void parseDataFromHtml(String s) {
         final String TEMPLATE_TEMP_NOW = "<p class=\"tempnow\">";
         final String TEMPLATE_TEMP_MIN = "low: ";
         final String TEMPLATE_TEMP_MAX = "24 hour high: ";
-        final String t = parseTempFromHtml(s, TEMPLATE_TEMP_NOW);
+        WeatherData wd = WeatherData.getInstance();
 
-        if (t != null) {
-            WeatherData wd = WeatherData.getInstance();
-            wd.setNowTemp(Float.parseFloat(t));
-            wd.setMinTemp(Float.parseFloat(parseTempFromHtml(s, TEMPLATE_TEMP_MIN)));
-            wd.setMaxTemp(Float.parseFloat(parseTempFromHtml(s, TEMPLATE_TEMP_MAX)));
-            wd.setValid(true);
-        }
+        wd.setTemp(parseTempFromHtml(s, TEMPLATE_TEMP_NOW));
+        wd.setTemp(parseTempFromHtml(s, TEMPLATE_TEMP_MIN), WeatherData.MIN_TEMP);
+        wd.setTemp(parseTempFromHtml(s, TEMPLATE_TEMP_MAX), WeatherData.MAX_TEMP);
     }
 
     private String getOutputFromUrl(String url) {

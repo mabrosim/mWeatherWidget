@@ -36,9 +36,9 @@
     <string name="no_color">Transparent</string>
     <string name="show_hint">Show hint?</string>
     <string name="widget_title">Linnanmaa</string>
-    <string name="toast_text_1"> 1 * tap --> Refresh data</string>
-    <string name="toast_text_2"> 2 * tap --> Open URL</string>
-    <string name="toast_text_3"> 3 * tap --> Configure widget</string>
+    <string name="toast_text_1"> 1 * tap \u2015> Refresh data</string>
+    <string name="toast_text_2"> 2 * tap \u2015> Open URL</string>
+    <string name="toast_text_3"> 3 * tap \u2015> Configure widget</string>
     <string name="toast_updated">Refreshed!</string>
     <string name="autorefresh_time">autorefresh time in minutes</string>
     <string name="default_min">MIN</string>

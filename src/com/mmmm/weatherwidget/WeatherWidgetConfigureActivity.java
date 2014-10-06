@@ -65,10 +65,6 @@ public class WeatherWidgetConfigureActivity extends Activity {
         }
     };
 
-    public WeatherWidgetConfigureActivity() {
-        super();
-    }
-
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
