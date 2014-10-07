@@ -30,16 +30,18 @@
 <resources>
 
     <string name="app_name">mWeatherWidget</string>
-    <string name="appwidget_text">-- °C</string>
+    <string name="appwidget_text">-- \u00B0C</string>
     <string name="custom_color">Custom</string>
     <string name="white_color">White</string>
     <string name="no_color">Transparent</string>
     <string name="show_hint">Show hint?</string>
     <string name="widget_title">Linnanmaa</string>
-    <string name="toast_text_1"> --> Refresh data</string>
-    <string name="toast_text_2"> --> Open URL</string>
-    <string name="toast_text_3"> --> Configure widget</string>
+    <string name="toast_text_1"> 1 * tap \u2015> Refresh data</string>
+    <string name="toast_text_2"> 2 * tap \u2015> Open URL</string>
+    <string name="toast_text_3"> 3 * tap \u2015> Configure widget</string>
     <string name="toast_updated">Refreshed!</string>
     <string name="autorefresh_time">autorefresh time in minutes</string>
-
+    <string name="default_min">MIN</string>
+    <string name="default_max">MAX</string>
+    <string name="timestamp">00:00</string>
 </resources>

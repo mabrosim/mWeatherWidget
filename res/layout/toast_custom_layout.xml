@@ -27,14 +27,13 @@
   OF SUCH DAMAGE.
   -->
 
-<LinearLayout
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/toast_layout_root"
-    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#df000000"
     android:orientation="vertical"
-    android:padding="10dp">
+    android:padding="8dp">
 
     <TextView
         android:layout_width="wrap_content"
@@ -53,72 +52,34 @@
         android:paddingEnd="5dp"
         android:paddingStart="5dp"/>
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:orientation="horizontal"
-        android:padding="4dp">
+        android:layout_marginLeft="40dp"
+        android:layout_marginStart="40dp"
+        android:padding="4dp"
+        android:text="@string/toast_text_1"
+        android:textAppearance="?android:attr/textAppearanceMedium"/>
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:src="@drawable/tap_widget_1a" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_vertical"
-            android:paddingEnd="4dp"
-            android:paddingStart="4dp"
-            android:text="@string/toast_text_1"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
-    </LinearLayout>
-
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:orientation="horizontal"
-        android:padding="4dp">
+        android:layout_marginLeft="40dp"
+        android:layout_marginStart="40dp"
+        android:padding="4dp"
+        android:text="@string/toast_text_2"
+        android:textAppearance="?android:attr/textAppearanceMedium"/>
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:scaleType="fitCenter"
-            android:src="@drawable/tap_widget_2a" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_vertical"
-            android:paddingEnd="4dp"
-            android:paddingStart="4dp"
-            android:text="@string/toast_text_2"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
-    </LinearLayout>
-
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:orientation="horizontal"
-        android:padding="4dp">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:scaleType="fitCenter"
-            android:src="@drawable/tap_widget_3a" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_vertical"
-            android:paddingEnd="4dp"
-            android:paddingStart="4dp"
-            android:text="@string/toast_text_3"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
-    </LinearLayout>
+        android:layout_marginLeft="40dp"
+        android:layout_marginStart="40dp"
+        android:padding="4dp"
+        android:text="@string/toast_text_3"
+        android:textAppearance="?android:attr/textAppearanceMedium"/>
 
 </LinearLayout>

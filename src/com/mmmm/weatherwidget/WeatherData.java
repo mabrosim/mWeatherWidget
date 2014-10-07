@@ -31,10 +31,14 @@ package com.mmmm.weatherwidget;
 public class WeatherData {
     public static final String URL =
             "http://weather.willab.fi/weather.html";
+    public static final int MIN_TEMP = 1;
+    public static final int MAX_TEMP = 2;
+
     private static final WeatherData ourInstance = new WeatherData();
-    private float mNowTemp;
-    private float mMinTemp;
-    private float mMaxTemp;
+    private final Temperature mNowTemp = new Temperature();
+    private final Temperature mMinTemp = new Temperature();
+    private final Temperature mMaxTemp = new Temperature();
+
     private int mClicks = 0;
     private boolean mShowHint = true;
 
@@ -45,28 +49,30 @@ public class WeatherData {
         return ourInstance;
     }
 
-    public float getNowTemp() {
-        return mNowTemp;
+    public void setTemp(Float temp, int kind) {
+        if (kind == MIN_TEMP) {
+            mMinTemp.setTemp(temp);
+        } else if (kind == MAX_TEMP) {
+            mMaxTemp.setTemp(temp);
+        }
+        setTemp(temp);
     }
 
-    public void setNowTemp(float mNowTemp) {
-        this.mNowTemp = mNowTemp;
+    public void setTemp(Float temp) {
+        mNowTemp.setTemp(temp);
     }
 
-    public float getMinTemp() {
-        return mMinTemp;
+    public String getTempString() {
+        return mNowTemp.toString() + " \u00B0C";
     }
 
-    public void setMinTemp(float mMinTemp) {
-        this.mMinTemp = mMinTemp;
-    }
-
-    public float getMaxTemp() {
-        return mMaxTemp;
-    }
-
-    public void setMaxTemp(float mMaxTemp) {
-        this.mMaxTemp = mMaxTemp;
+    public String getTempString(int kind) {
+        if (kind == MIN_TEMP) {
+            return mMinTemp.toString();
+        } else if (kind == MAX_TEMP) {
+            return mMaxTemp.toString();
+        }
+        return getTempString();
     }
 
     public int getClicks() {
@@ -83,6 +89,29 @@ public class WeatherData {
 
     public void setShowHint(boolean mShowHint) {
         this.mShowHint = mShowHint;
+    }
+
+    public void invalidate() {
+        mNowTemp.setTemp(Float.NaN);
+        mMinTemp.setTemp(Float.NaN);
+        mMaxTemp.setTemp(Float.NaN);
+    }
+
+    private class Temperature {
+        private final String mDefaultString = "--";
+        private Float mTemp;
+
+        public void setTemp(Float mTemp) {
+            this.mTemp = mTemp;
+        }
+
+        @Override
+        public String toString() {
+            if (mTemp.isNaN()) {
+                return this.mDefaultString;
+            } else
+                return String.valueOf(mTemp);
+        }
     }
 }
 
