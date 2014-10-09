@@ -54,8 +54,9 @@ public class WeatherData {
             mMinTemp.setTemp(temp);
         } else if (kind == MAX_TEMP) {
             mMaxTemp.setTemp(temp);
+        } else {
+            setTemp(temp);
         }
-        setTemp(temp);
     }
 
     public void setTemp(Float temp) {
@@ -101,8 +102,8 @@ public class WeatherData {
         private final String mDefaultString = "--";
         private Float mTemp;
 
-        public void setTemp(Float mTemp) {
-            this.mTemp = mTemp;
+        public void setTemp(Float t) {
+            this.mTemp = t;
         }
 
         @Override

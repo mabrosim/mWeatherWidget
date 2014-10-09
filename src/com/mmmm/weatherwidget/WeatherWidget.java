@@ -137,6 +137,7 @@ public class WeatherWidget extends AppWidgetProvider {
         Intent intent = new Intent(context, OpenUrlActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
+        getWeatherData(context);
     }
 
     private void tripleClickHandler(Context context) {
