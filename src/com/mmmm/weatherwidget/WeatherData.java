@@ -31,6 +31,8 @@ package com.mmmm.weatherwidget;
 public class WeatherData {
     public static final String URL =
             "http://weather.willab.fi/weather.html";
+    public static final String PARSE_URL =
+            "http://weather.willab.fi/weather.xml";
     public static final int MIN_TEMP = 1;
     public static final int MAX_TEMP = 2;
 

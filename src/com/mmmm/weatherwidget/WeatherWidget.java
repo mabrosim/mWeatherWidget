@@ -91,7 +91,7 @@ public class WeatherWidget extends AppWidgetProvider {
         });
 
         Log.d(TAG, "task status " + task.getStatus().toString());
-        task.execute(WeatherData.URL);
+        task.execute(WeatherData.PARSE_URL);
     }
 
     private String getClockTime() {

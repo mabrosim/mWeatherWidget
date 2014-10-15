@@ -37,6 +37,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 class GetHTMLTask extends AsyncTask<String, Void, Void> {
@@ -68,18 +70,21 @@ class GetHTMLTask extends AsyncTask<String, Void, Void> {
         int index = s.indexOf(search_template);
 
         if (index != -1) {
-            int temp_index_starts = index + search_template.length();
-            return Float.parseFloat(s.substring(temp_index_starts, temp_index_starts + 4));
-        } else
-            return Float.NaN;
+            int start = index + search_template.length();
+            Pattern p = Pattern.compile("[-]?[0-9]*\\.?[0-9]+");
+            Matcher m = p.matcher(s.substring(start, start + 5));
+            if (m.find()) {
+                return Float.valueOf(m.group());
+            }
+        }
+        return Float.NaN;
     }
 
     private void parseDataFromHtml(String s) {
-        final String TEMPLATE_TEMP_NOW = "<p class=\"tempnow\">";
-        final String TEMPLATE_TEMP_MIN = "low: ";
-        final String TEMPLATE_TEMP_MAX = "24 hour high: ";
+        final String TEMPLATE_TEMP_NOW = "<tempnow unit=\"C\">";
+        final String TEMPLATE_TEMP_MIN = "<templo unit=\"C\">";
+        final String TEMPLATE_TEMP_MAX = "<temphi unit=\"C\">";
         WeatherData wd = WeatherData.getInstance();
-
         wd.setTemp(parseTempFromHtml(s, TEMPLATE_TEMP_NOW));
         wd.setTemp(parseTempFromHtml(s, TEMPLATE_TEMP_MIN), WeatherData.MIN_TEMP);
         wd.setTemp(parseTempFromHtml(s, TEMPLATE_TEMP_MAX), WeatherData.MAX_TEMP);
