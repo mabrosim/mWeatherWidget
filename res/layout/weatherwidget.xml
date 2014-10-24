@@ -41,10 +41,9 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:layout_margin="0dp"
-        android:contentDescription="@string/appwidget_text"
         android:text="@string/appwidget_text"
         android:textColor="@android:color/black"
-        android:textSize="17sp"
+        android:textSize="17dp"
         android:textStyle="bold"/>
 
     <TextView
@@ -53,10 +52,10 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="4dp"
-        android:text="@string/widget_title"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textColor="@android:color/black"
-        android:textSize="11dp"/>
+        android:text="@string/location"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="11dp"
+        android:gravity="center"/>
 
     <TextView
         android:id="@+id/tv_MinTemp"
@@ -67,7 +66,6 @@
         android:layout_alignParentStart="true"
         android:layout_marginLeft="3dp"
         android:text="@string/default_min"
-        android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="#ff4e2cff"
         android:textSize="12dp"/>
 
@@ -80,7 +78,6 @@
         android:layout_alignParentRight="true"
         android:layout_marginRight="3dp"
         android:text="@string/default_max"
-        android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="#ffd00202"
         android:textSize="12dp"/>
 
@@ -90,9 +87,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/tvTempNow"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="-2dp"
         android:text="@string/timestamp"
-        android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="@android:color/darker_gray"
         android:textSize="8dp"/>
 
