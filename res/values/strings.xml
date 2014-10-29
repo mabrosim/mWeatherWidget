@@ -31,9 +31,6 @@
 
     <string name="app_name">mWeatherWidget</string>
     <string name="appwidget_text">-- \u00B0C</string>
-    <string name="custom_color">Custom</string>
-    <string name="white_color">White</string>
-    <string name="no_color">Transparent</string>
     <string name="show_hint">Show hint?</string>
     <string name="location">Oulu, Linnanmaa</string>
     <string name="toast_text_1"> 1 * tap \u2015> Refresh data</string>
@@ -43,5 +40,5 @@
     <string name="autorefresh_time">autorefresh time in minutes</string>
     <string name="default_min">MIN</string>
     <string name="default_max">MAX</string>
-    <string name="timestamp">00:00</string>
+    <string name="default_timestamp">00:00</string>
 </resources>

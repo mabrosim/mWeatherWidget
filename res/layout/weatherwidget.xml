@@ -54,8 +54,9 @@
         android:layout_marginTop="4dp"
         android:text="@string/location"
         android:textColor="@android:color/darker_gray"
-        android:textSize="11dp"
-        android:gravity="center"/>
+        android:textSize="10dp"
+        android:gravity="center"
+        android:layout_marginRight="2dp"/>
 
     <TextView
         android:id="@+id/tv_MinTemp"
@@ -87,7 +88,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/tvTempNow"
         android:layout_centerHorizontal="true"
-        android:text="@string/timestamp"
+        android:text="@string/default_timestamp"
         android:textColor="@android:color/darker_gray"
         android:textSize="8dp"/>
 

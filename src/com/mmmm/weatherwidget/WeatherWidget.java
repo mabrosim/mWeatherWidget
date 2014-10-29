@@ -64,11 +64,8 @@ public class WeatherWidget extends AppWidgetProvider {
     private static final String CLICK = "com.mmmm.weather_widget.CLICK";
 
     static void setBackgroundColor(Context context, String c) {
-        Log.d(TAG, "setBackgroundColor: " + c);
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-
         ComponentName thisWidget = new ComponentName(context, WeatherWidget.class);
-
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.weatherwidget);
 
         int color = Color.parseColor(c);
@@ -77,20 +74,15 @@ public class WeatherWidget extends AppWidgetProvider {
     }
 
     private void getWeatherData(final Context context) {
-        Log.d(TAG, "getWeatherData");
-
         WeatherData.getInstance().invalidate();
         updateWeatherWidget(context);
 
         GetHTMLTask task = new GetHTMLTask(new GetHTMLTask.OnTaskCompleted() {
             @Override
             public void onTaskCompleted() {
-                Log.d(TAG, "onTaskCompleted");
                 updateWeatherWidget(context);
             }
         });
-
-        Log.d(TAG, "task status " + task.getStatus().toString());
         task.execute(WeatherData.PARSE_URL);
     }
 
@@ -185,7 +177,6 @@ public class WeatherWidget extends AppWidgetProvider {
     }
 
     private void handleUpdateAction(Context context) {
-        Log.d(TAG, "handleUpdateAction");
         getWeatherData(context);
     }
 
@@ -201,7 +192,6 @@ public class WeatherWidget extends AppWidgetProvider {
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        Log.d(TAG, "onUpdate");
         getWeatherData(context);
     }
 
@@ -214,12 +204,10 @@ public class WeatherWidget extends AppWidgetProvider {
 
     @Override
     public void onDeleted(Context context, int[] appWidgetIds) {
-        Log.d(TAG, "onDeleted");
     }
 
     @Override
     public void onEnabled(Context context) {
-        Log.d(TAG, "onEnabled");
         if (context != null) {
             PendingIntent mPendingIntent = PendingIntent.getBroadcast(
                     context, 0, new Intent(UPDATE_INTERVAL_EXPIRED), 0);
@@ -235,6 +223,5 @@ public class WeatherWidget extends AppWidgetProvider {
 
     @Override
     public void onDisabled(Context context) {
-        Log.d(TAG, "onDisabled");
     }
 }

@@ -36,7 +36,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.RadioGroup;
 import android.widget.Switch;
 
 /**
@@ -54,8 +53,6 @@ public class WeatherWidgetConfigureActivity extends Activity {
             EditText editText = (EditText) findViewById(R.id.editText);
 
             editText.getText();
-            // It is the responsibility of the configuration activity to update the app widget
-            WeatherWidget.setBackgroundColor(context, editText.getText().toString());
 
             // Make sure we pass back the original appWidgetId
             Intent resultValue = new Intent();
@@ -83,31 +80,9 @@ public class WeatherWidgetConfigureActivity extends Activity {
             }
         });
 
-        ((RadioGroup) findViewById(R.id.radioGroup)).setOnCheckedChangeListener(new RadioGroup
-                .OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
-                EditText editText = (EditText) findViewById(R.id.editText);
-
-                if (checkedId == R.id.radio0) {
-                    editText.setText("#dfffffff"); //white
-                }
-                if (checkedId == R.id.radio1) {
-                    editText.setText("#00000000");  //transparent
-                }
-                if (checkedId == R.id.radio2) {
-                    editText.setText("#ffff7f02");  //custom
-                }
-            }
-        });
-
-        EditText editText = (EditText) findViewById(R.id.editText);
-        editText.setText("#dfffffff");
-
         Switch switchHint = (Switch) findViewById(R.id.switch1);
 
         switchHint.setChecked(WeatherData.getInstance().isShowHint());
-
         switchHint.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
