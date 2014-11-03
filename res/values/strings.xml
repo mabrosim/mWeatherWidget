@@ -28,10 +28,9 @@
   -->
 
 <resources>
-
     <string name="app_name">mWeatherWidget</string>
     <string name="appwidget_text">-- \u00B0C</string>
-    <string name="show_hint">Show hint?</string>
+    <string name="show_hint">Tapping hint?</string>
     <string name="location">Oulu, Linnanmaa</string>
     <string name="toast_text_1"> 1 * tap \u2015> Refresh data</string>
     <string name="toast_text_2"> 2 * tap \u2015> Open URL</string>

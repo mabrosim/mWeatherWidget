@@ -27,15 +27,14 @@
   OF SUCH DAMAGE.
   -->
 
-<manifest
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.mmmm.weatherwidget"
-    xmlns:android="http://schemas.android.com/apk/res/android"
     android:versionCode="1"
     android:versionName="1.0">
 
     <uses-sdk
         android:minSdkVersion="16"
-        android:targetSdkVersion="20"/>
+        android:targetSdkVersion="18"/>
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.INTERNET"/>
@@ -43,9 +42,10 @@
     <application
         android:allowBackup="true"
         android:icon="@drawable/weather_widget_preview"
-        android:label="@string/app_name"
-        android:theme="@style/AppTheme">
-        <activity android:name=".WeatherWidgetConfigureActivity">
+        android:label="@string/app_name">
+        <activity
+            android:name=".WeatherWidgetConfigureActivity"
+            android:theme="@style/ConfigurationActivityTheme">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
             </intent-filter>
@@ -53,7 +53,7 @@
 
         <activity
             android:name=".OpenUrlActivity"
-            android:theme="@style/DialogNoTitle"/>
+            android:theme="@style/WebViewActivityTheme"/>
 
         <receiver
             android:name=".WeatherWidget"
