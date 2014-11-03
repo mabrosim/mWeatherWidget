@@ -35,11 +35,10 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -58,20 +57,9 @@ import java.util.Date;
 public class WeatherWidget extends AppWidgetProvider {
 
     private static final int DOUBLE_CLICK_DELAY = 400;
-    private static final String TAG = "WeatherWidget";
     private static final String UPDATE_INTERVAL_EXPIRED = "com.mmmm.weather_widget" +
             ".UPDATE_INTERVAL_EXPIRED";
     private static final String CLICK = "com.mmmm.weather_widget.CLICK";
-
-    static void setBackgroundColor(Context context, String c) {
-        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-        ComponentName thisWidget = new ComponentName(context, WeatherWidget.class);
-        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.weatherwidget);
-
-        int color = Color.parseColor(c);
-        views.setInt(R.id.layoutWidget, "setBackgroundColor", color);
-        appWidgetManager.updateAppWidget(thisWidget, views);
-    }
 
     private void getWeatherData(final Context context) {
         WeatherData.getInstance().invalidate();
@@ -118,8 +106,14 @@ public class WeatherWidget extends AppWidgetProvider {
         toast.show();
     }
 
+    private boolean isShowHint(Context context) {
+        SharedPreferences sharedPref = context.getSharedPreferences(WeatherData.PREFS_NAME,
+                Context.MODE_PRIVATE);
+        return sharedPref.getBoolean(WeatherData.PREF_SHOW_HINT, true);
+    }
+
     private void singleClickHandler(Context context) {
-        if (WeatherData.getInstance().isShowHint()) {
+        if (isShowHint(context)) {
             showToast(context);
         }
         getWeatherData(context);
@@ -217,7 +211,7 @@ public class WeatherWidget extends AppWidgetProvider {
             cal.add(Calendar.SECOND, 5);
             ((AlarmManager) context.getSystemService(Context.ALARM_SERVICE)).setRepeating(
                     AlarmManager.RTC, cal.getTimeInMillis(),
-                    AlarmManager.INTERVAL_FIFTEEN_MINUTES /*900000*/, mPendingIntent);
+                    AlarmManager.INTERVAL_FIFTEEN_MINUTES, mPendingIntent);
         }
     }
 

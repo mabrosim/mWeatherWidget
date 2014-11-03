@@ -29,13 +29,11 @@
 package com.mmmm.weatherwidget;
 
 import android.app.Activity;
-import android.appwidget.AppWidgetManager;
 import android.content.Context;
-import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.Switch;
 
 /**
@@ -43,37 +41,27 @@ import android.widget.Switch;
  */
 public class WeatherWidgetConfigureActivity extends Activity {
 
-    //private static final String PREFS_NAME = "com.mmmm.weatherwidget.WeatherWidget";
-    private int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
+    private boolean isShowHint() {
+        SharedPreferences sharedPref = getSharedPreferences(WeatherData.PREFS_NAME,
+                Context.MODE_PRIVATE);
+        return sharedPref.getBoolean(WeatherData.PREF_SHOW_HINT, true);
+    }
 
-    private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
-        public void onClick(View v) {
-            final Context context = WeatherWidgetConfigureActivity.this;
+    private void setShowHint(boolean b) {
+        SharedPreferences.Editor sharedPrefEditor = getSharedPreferences(WeatherData.PREFS_NAME,
+                Context.MODE_PRIVATE).edit();
 
-            EditText editText = (EditText) findViewById(R.id.editText);
-
-            editText.getText();
-
-            // Make sure we pass back the original appWidgetId
-            Intent resultValue = new Intent();
-            resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
-            setResult(RESULT_OK, resultValue);
-            finish();
-        }
-    };
+        sharedPrefEditor.putBoolean(WeatherData.PREF_SHOW_HINT, b);
+        sharedPrefEditor.apply();
+    }
 
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
 
-        // Set the result to CANCELED.  This will cause the widget host to cancel
-        // out of the widget placement if the user presses the back button.
-        setResult(RESULT_CANCELED);
-
         setContentView(R.layout.weatherwidget_configure);
 
-        findViewById(R.id.button_ok).setOnClickListener(mOnClickListener);
-        findViewById(R.id.button_cancel).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.button_dismiss).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
@@ -81,22 +69,15 @@ public class WeatherWidgetConfigureActivity extends Activity {
         });
 
         Switch switchHint = (Switch) findViewById(R.id.switch1);
-
-        switchHint.setChecked(WeatherData.getInstance().isShowHint());
+        switchHint.setChecked(isShowHint());
         switchHint.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                WeatherData.getInstance().setShowHint(b);
+                setShowHint(b);
             }
         });
 
-        // Find the widget id from the intent.
-        Intent intent = getIntent();
-        Bundle extras = intent.getExtras();
-        if (extras != null) {
-            mAppWidgetId = extras.getInt(
-                    AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
-        }
+        setResult(RESULT_OK);
     }
 }
 

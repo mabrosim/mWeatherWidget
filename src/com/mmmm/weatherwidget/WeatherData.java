@@ -29,10 +29,10 @@
 package com.mmmm.weatherwidget;
 
 public class WeatherData {
-    public static final String URL =
-            "http://weather.willab.fi/weather.html";
-    public static final String PARSE_URL =
-            "http://weather.willab.fi/weather.xml";
+    public static final String URL = "http://weather.willab.fi/weather.html";
+    public static final String PARSE_URL = "http://weather.willab.fi/weather.xml";
+    public static final String PREFS_NAME = "com.mmmm.weatherwidget.WeatherWidget";
+    public static final String PREF_SHOW_HINT = PREFS_NAME + "_SHOW_HINT";
     public static final int MIN_TEMP = 1;
     public static final int MAX_TEMP = 2;
 
@@ -42,7 +42,6 @@ public class WeatherData {
     private final Temperature mMaxTemp = new Temperature();
 
     private int mClicks = 0;
-    private boolean mShowHint = true;
 
     private WeatherData() {
     }
@@ -84,14 +83,6 @@ public class WeatherData {
 
     public void setClicks(int mClicks) {
         this.mClicks = mClicks;
-    }
-
-    public boolean isShowHint() {
-        return mShowHint;
-    }
-
-    public void setShowHint(boolean mShowHint) {
-        this.mShowHint = mShowHint;
     }
 
     public void invalidate() {
