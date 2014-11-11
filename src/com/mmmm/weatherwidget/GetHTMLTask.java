@@ -126,7 +126,7 @@ class GetHTMLTask extends AsyncTask<String, Void, Void> {
                 stream = httpConnection.getInputStream();
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
+            //ex.printStackTrace();
         }
         return stream;
     }
