@@ -26,7 +26,7 @@
  OF SUCH DAMAGE.
  */
 
-package com.mmmm.weatherwidget;
+package com.mabrosim.weatherwidget;
 
 import android.app.Activity;
 import android.os.Bundle;
