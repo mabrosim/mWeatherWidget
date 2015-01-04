@@ -57,9 +57,9 @@ import java.util.Date;
 public class WeatherWidget extends AppWidgetProvider {
 
     private static final int DOUBLE_CLICK_DELAY = 400;
-    private static final String UPDATE_INTERVAL_EXPIRED = "com.mmmm.weather_widget" +
+    private static final String UPDATE_INTERVAL_EXPIRED = "com.mabrosim.weather_widget" +
             ".UPDATE_INTERVAL_EXPIRED";
-    private static final String CLICK = "com.mmmm.weather_widget.CLICK";
+    private static final String CLICK = "com.mabrosim.weather_widget.CLICK";
 
     private void getWeatherData(final Context context) {
         WeatherData.getInstance().invalidate();

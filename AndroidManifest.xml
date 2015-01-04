@@ -28,9 +28,9 @@
   -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.mmmm.weatherwidget"
-    android:versionCode="2"
-    android:versionName="1.0.1">
+    package="com.mabrosim.weatherwidget"
+    android:versionCode="1"
+    android:versionName="1.0.0">
 
     <uses-sdk
         android:minSdkVersion="16"
@@ -59,8 +59,8 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
-                <action android:name="com.mmmm.weather_widget.UPDATE_INTERVAL_EXPIRED"/>
-                <action android:name="com.mmmm.weather_widget.CLICK"/>
+                <action android:name="com.mabrosim.weather_widget.UPDATE_INTERVAL_EXPIRED"/>
+                <action android:name="com.mabrosim.weather_widget.CLICK"/>
             </intent-filter>
 
             <meta-data
