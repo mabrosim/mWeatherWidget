@@ -1,5 +1,10 @@
-.idea
+*~
+.bak
+
+# Android Studio
 .gradle
-local.properties
-/build
-/app/build/
+/local.properties
+/.idea
+.DS_Store
+*build/
+*.iml
