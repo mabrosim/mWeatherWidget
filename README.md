@@ -12,6 +12,7 @@ The application has 2 activities: configuration and URL webview.
 the sources could be easily imported into Android Studio IDE or Eclipse with ADT.
 
 The app is availaible on Google Play!
+
 <a href="https://play.google.com/store/apps/details?id=com.mabrosim.weatherwidget">
    <img alt="Get it on Google Play"
         src="https://play.google.com/intl/en_us/badges/images/apps/en-play-badge.png" width="200"/>
