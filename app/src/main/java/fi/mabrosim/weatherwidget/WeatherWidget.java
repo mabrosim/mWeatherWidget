@@ -1,6 +1,7 @@
 package fi.mabrosim.weatherwidget;
 
 import android.app.AlarmManager;
+import android.app.IntentService;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
@@ -10,7 +11,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
+import android.os.IBinder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -20,6 +21,7 @@ import android.widget.Toast;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * Implementation of App Widget functionality.
@@ -27,144 +29,26 @@ import java.util.Date;
  * WeatherWidgetConfigureActivity}
  */
 public class WeatherWidget extends AppWidgetProvider {
-
-    private static final int DOUBLE_CLICK_DELAY = 400;
-    private static final String UPDATE_INTERVAL_EXPIRED = "com.mabrosim.weather_widget" +
-            ".UPDATE_INTERVAL_EXPIRED";
-    private static final String CLICK = "com.mabrosim.weather_widget.CLICK";
-
-    private void getWeatherData(final Context context) {
-        WeatherData.getInstance().invalidate();
-        updateWeatherWidget(context);
-
-        GetHTMLTask task = new GetHTMLTask(new GetHTMLTask.OnTaskCompleted() {
-            @Override
-            public void onTaskCompleted() {
-                updateWeatherWidget(context);
-            }
-        });
-        task.execute(WeatherData.PARSE_URL);
-    }
-
-    private String getClockTime() {
-        return new SimpleDateFormat("HH:mm").format(new Date());
-    }
-
-    private void updateWeatherWidget(Context context) {
-        ComponentName thisWidget = new ComponentName(context, getClass());
-        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, new Intent(CLICK), 0);
-        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.weatherwidget);
-        WeatherData wd = WeatherData.getInstance();
-
-        views.setTextViewText(R.id.tvTempNow, wd.getTempString());
-        views.setTextViewText(R.id.tv_MinTemp, wd.getTempString(WeatherData.MIN_TEMP));
-        views.setTextViewText(R.id.tv_MaxTemp, wd.getTempString(WeatherData.MAX_TEMP));
-        views.setTextViewText(R.id.textTimestamp, getClockTime());
-
-        views.setOnClickPendingIntent(R.id.layoutWidget, pendingIntent);
-
-        // Instruct the widget manager to update the widget
-        appWidgetManager.updateAppWidget(thisWidget, views);
-    }
-
-    private void showToast(Context context) {
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context
-                .LAYOUT_INFLATER_SERVICE);
-        View layout = inflater.inflate(R.layout.toast_custom_layout, new LinearLayout(context));
-        Toast toast = new Toast(context);
-        toast.setDuration(Toast.LENGTH_LONG);
-        toast.setView(layout);
-        toast.show();
-    }
-
-    private boolean isShowHint(Context context) {
-        SharedPreferences sharedPref = context.getSharedPreferences(WeatherData.PREFS_NAME,
-                Context.MODE_PRIVATE);
-        return sharedPref.getBoolean(WeatherData.PREF_SHOW_HINT, true);
-    }
-
-    private void singleClickHandler(Context context) {
-        if (isShowHint(context)) {
-            showToast(context);
-        }
-        getWeatherData(context);
-    }
-
-    private void doubleClickHandler(Context context) {
-        Intent intent = new Intent(context, OpenUrlActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(intent);
-        getWeatherData(context);
-    }
-
-    private void tripleClickHandler(Context context) {
-        Intent intent = new Intent(context, WeatherWidgetConfigureActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(intent);
-    }
-
-    private void handleClickAction(final Context context) {
-
-        int clickCount = WeatherData.getInstance().getClicks();
-        WeatherData.getInstance().setClicks(++clickCount);
-
-        final Handler handler = new Handler() {
-            public void handleMessage(Message msg) {
-
-                int clickCount = WeatherData.getInstance().getClicks();
-
-                if (clickCount == 1) {
-                    singleClickHandler(context);
-                }
-                if (clickCount == 2) {
-                    doubleClickHandler(context);
-                }
-                if (clickCount == 3) {
-                    tripleClickHandler(context);
-                }
-
-                WeatherData.getInstance().setClicks(0);
-            }
-        };
-
-        if (clickCount == 1) new Thread() {
-            @Override
-            public void run() {
-                try {
-                    synchronized (this) {
-                        wait(DOUBLE_CLICK_DELAY);
-                    }
-                    handler.sendEmptyMessage(0);
-                } catch (InterruptedException ignored) {
-                }
-            }
-        }.start();
-    }
-
-    private void handleUpdateAction(Context context) {
-        getWeatherData(context);
-    }
+    private static final String UPDATE_INTERVAL_EXPIRED = "fi.mabrosim.weatherwidget.action.UPDATE_INTERVAL_EXPIRED";
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (intent.getAction().equals(CLICK)) {
-            handleClickAction(context);
-        } else if (intent.getAction().equals(UPDATE_INTERVAL_EXPIRED)) {
-            handleUpdateAction(context);
+        if (intent.getAction().equals(UPDATE_INTERVAL_EXPIRED)) {
+            updateWeatherWidget(context);
+        } else {
+            super.onReceive(context, intent);
         }
-        super.onReceive(context, intent);
     }
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        getWeatherData(context);
+        updateWeatherWidget(context);
     }
 
     @Override
     public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager,
                                           int appWidgetId, Bundle newOptions) {
-        getWeatherData(context);
+        updateWeatherWidget(context);
         super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions);
     }
 
@@ -189,5 +73,103 @@ public class WeatherWidget extends AppWidgetProvider {
 
     @Override
     public void onDisabled(Context context) {
+    }
+
+    public static void updateWeatherWidget(Context context) {
+        context.startService(new Intent(context, UpdateService.class));
+    }
+
+    public static class UpdateService extends IntentService {
+        private static final String  TAG      = "WeatherWidgetUpdateService";
+        private final        Handler mHandler = new Handler();
+
+        public UpdateService() {
+            super(TAG);
+        }
+
+        @Override
+        public IBinder onBind(Intent intent) {
+            return null;
+        }
+
+        @Override
+        protected void onHandleIntent(Intent intent) {
+            if (Clicks.ACTION_CLICK.equals(intent.getAction())) {
+                Clicks.handleClickAction(this, mHandler);
+            } else {
+                getWeatherData(this);
+            }
+        }
+
+        private static void getWeatherData(final Context context) {
+            WeatherData.getInstance().invalidate();
+            WeatherWidget.updateViews(context);
+
+            GetHTMLTask task = new GetHTMLTask(new GetHTMLTask.OnTaskCompleted() {
+                @Override
+                public void onTaskCompleted() {
+                    WeatherWidget.updateViews(context);
+                }
+            });
+            task.execute(WeatherData.PARSE_URL);
+        }
+    }
+
+    static void singleClickHandler(Context context) {
+        if (isShowHint(context)) {
+            showToast(context);
+        }
+        updateWeatherWidget(context);
+    }
+
+    static void doubleClickHandler(Context context) {
+        Intent intent = new Intent(context, OpenUrlActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
+        updateWeatherWidget(context);
+    }
+
+    static void tripleClickHandler(Context context) {
+        Intent intent = new Intent(context, WeatherWidgetConfigureActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
+    }
+
+    private static void updateViews(Context context) {
+        ComponentName thisWidget = new ComponentName(context, WeatherWidget.class);
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+        PendingIntent pendingIntent = PendingIntent.getService(context, 0, new Intent(Clicks.ACTION_CLICK), 0);
+        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.weatherwidget);
+        WeatherData wd = WeatherData.getInstance();
+
+        views.setTextViewText(R.id.tvTempNow, wd.getTempString());
+        views.setTextViewText(R.id.tv_MinTemp, wd.getTempString(WeatherData.MIN_TEMP));
+        views.setTextViewText(R.id.tv_MaxTemp, wd.getTempString(WeatherData.MAX_TEMP));
+        views.setTextViewText(R.id.textTimestamp, getClockTime());
+
+        views.setOnClickPendingIntent(R.id.layoutWidget, pendingIntent);
+
+        // Instruct the widget manager to update the widget
+        appWidgetManager.updateAppWidget(thisWidget, views);
+    }
+
+    private static String getClockTime() {
+        return new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+    }
+
+    private static void showToast(Context context) {
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context
+                .LAYOUT_INFLATER_SERVICE);
+        View layout = inflater.inflate(R.layout.toast_custom_layout, new LinearLayout(context));
+        Toast toast = new Toast(context);
+        toast.setDuration(Toast.LENGTH_LONG);
+        toast.setView(layout);
+        toast.show();
+    }
+
+    private static boolean isShowHint(Context context) {
+        SharedPreferences sharedPref = context.getSharedPreferences(WeatherData.PREFS_NAME,
+                Context.MODE_PRIVATE);
+        return sharedPref.getBoolean(WeatherData.PREF_SHOW_HINT, true);
     }
 }

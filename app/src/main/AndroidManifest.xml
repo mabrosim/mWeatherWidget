@@ -23,21 +23,33 @@
 
         <activity
             android:name=".OpenUrlActivity"
-            android:theme="@style/WebViewActivityTheme"/>
+            android:theme="@style/WebViewActivityTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
 
         <receiver
             android:name=".WeatherWidget"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
-                <action android:name="com.mabrosim.weather_widget.UPDATE_INTERVAL_EXPIRED"/>
-                <action android:name="com.mabrosim.weather_widget.CLICK"/>
+                <action android:name="fi.mabrosim.weatherwidget.action.UPDATE_INTERVAL_EXPIRED"/>
             </intent-filter>
 
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/weatherwidget_info"/>
         </receiver>
+
+        <service
+            android:name=".WeatherWidget$UpdateService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="fi.mabrosim.weatherwidget.action.CLICK"/>
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>
