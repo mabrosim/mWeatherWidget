@@ -1,4 +1,4 @@
-package com.mabrosim.weatherwidget;
+package fi.mabrosim.weatherwidget;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;

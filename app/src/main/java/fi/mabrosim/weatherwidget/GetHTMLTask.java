@@ -1,4 +1,4 @@
-package com.mabrosim.weatherwidget;
+package fi.mabrosim.weatherwidget;
 
 import android.os.AsyncTask;
 
