@@ -9,6 +9,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.Charset;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -68,7 +69,7 @@ class GetHTMLTask extends AsyncTask<String, Void, Void> {
             InputStream stream = getHttpConnection(url);
             if (stream != null) {
                 BufferedReader buffer = new BufferedReader(
-                        new InputStreamReader(stream));
+                        new InputStreamReader(stream, Charset.forName("UTF-8")));
                 String s;
                 while ((s = buffer.readLine()) != null)
                     output.append(s);
@@ -97,7 +98,9 @@ class GetHTMLTask extends AsyncTask<String, Void, Void> {
             if (httpConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
                 stream = httpConnection.getInputStream();
             }
-        } catch (Exception ex) {
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (Exception e) {
             //ex.printStackTrace();
         }
         return stream;
