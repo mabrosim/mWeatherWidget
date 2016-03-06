@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<lint>
+    <!-- Disable, enable if/when needed -->
+    <issue id="IconMissingDensityFolder" severity="ignore"/>
+    <!-- Disable, enable if/when needed -->
+    <issue id="IconLauncherShape" severity="ignore"/>
+    <!-- Disable, enable if/when needed -->
+    <issue id="SpUsage" severity="ignore"/>
+    <!-- Disable, enable if/when needed -->
+    <issue id="ContentDescription" severity="ignore"/>
+    <!-- Disable, enable if/when needed -->
+    <issue id="IconDensities" severity="ignore"/>
+</lint>
