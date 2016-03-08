@@ -36,7 +36,6 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
-                <action android:name="fi.mabrosim.weatherwidget.action.UPDATE_INTERVAL_EXPIRED"/>
             </intent-filter>
 
             <meta-data
@@ -49,6 +48,7 @@
             android:exported="false">
             <intent-filter>
                 <action android:name="fi.mabrosim.weatherwidget.action.CLICK"/>
+                <action android:name="fi.mabrosim.weatherwidget.action.UPDATE_INTERVAL_EXPIRED"/>
             </intent-filter>
         </service>
     </application>

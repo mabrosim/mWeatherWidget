@@ -12,6 +12,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.SystemClock;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -19,7 +20,6 @@ import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -30,15 +30,6 @@ import java.util.Locale;
  */
 public class WeatherWidget extends AppWidgetProvider {
     private static final String UPDATE_INTERVAL_EXPIRED = "fi.mabrosim.weatherwidget.action.UPDATE_INTERVAL_EXPIRED";
-
-    @Override
-    public void onReceive(Context context, Intent intent) {
-        if (intent.getAction().equals(UPDATE_INTERVAL_EXPIRED)) {
-            updateWeatherWidget(context);
-        } else {
-            super.onReceive(context, intent);
-        }
-    }
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
@@ -59,14 +50,11 @@ public class WeatherWidget extends AppWidgetProvider {
     @Override
     public void onEnabled(Context context) {
         if (context != null) {
-            PendingIntent mPendingIntent = PendingIntent.getBroadcast(
+            PendingIntent mPendingIntent = PendingIntent.getService(
                     context, 0, new Intent(UPDATE_INTERVAL_EXPIRED), 0);
 
-            Calendar cal = Calendar.getInstance();
-            cal.setTimeInMillis(System.currentTimeMillis());
-            cal.add(Calendar.SECOND, 5);
             ((AlarmManager) context.getSystemService(Context.ALARM_SERVICE)).setRepeating(
-                    AlarmManager.RTC, cal.getTimeInMillis(),
+                    AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime(),
                     AlarmManager.INTERVAL_FIFTEEN_MINUTES, mPendingIntent);
         }
     }
