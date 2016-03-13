@@ -11,7 +11,7 @@ The application has 2 activities: configuration and URL webview.
 
 The app is availaible on Google Play!
 
-<a href="https://play.google.com/store/apps/details?id=com.mabrosim.weatherwidget">
+<a href="https://play.google.com/store/apps/details?id=fi.mabrosim.weatherwidget">
    <img alt="Get it on Google Play"
         src="https://play.google.com/intl/en_us/badges/images/apps/en-play-badge.png" width="200"/>
 </a>
