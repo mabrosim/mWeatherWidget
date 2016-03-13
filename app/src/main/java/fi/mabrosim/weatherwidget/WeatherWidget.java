@@ -1,6 +1,5 @@
 package fi.mabrosim.weatherwidget;
 
-import android.app.AlarmManager;
 import android.app.IntentService;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
@@ -12,7 +11,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.SystemClock;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -29,8 +27,6 @@ import java.util.Locale;
  * WeatherWidgetConfigureActivity}
  */
 public class WeatherWidget extends AppWidgetProvider {
-    private static final String UPDATE_INTERVAL_EXPIRED = "fi.mabrosim.weatherwidget.action.UPDATE_INTERVAL_EXPIRED";
-
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         updateWeatherWidget(context);
@@ -41,26 +37,6 @@ public class WeatherWidget extends AppWidgetProvider {
                                           int appWidgetId, Bundle newOptions) {
         updateWeatherWidget(context);
         super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions);
-    }
-
-    @Override
-    public void onDeleted(Context context, int[] appWidgetIds) {
-    }
-
-    @Override
-    public void onEnabled(Context context) {
-        if (context != null) {
-            PendingIntent mPendingIntent = PendingIntent.getService(
-                    context, 0, new Intent(UPDATE_INTERVAL_EXPIRED), 0);
-
-            ((AlarmManager) context.getSystemService(Context.ALARM_SERVICE)).setRepeating(
-                    AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime(),
-                    AlarmManager.INTERVAL_FIFTEEN_MINUTES, mPendingIntent);
-        }
-    }
-
-    @Override
-    public void onDisabled(Context context) {
     }
 
     public static void updateWeatherWidget(Context context) {
@@ -124,9 +100,6 @@ public class WeatherWidget extends AppWidgetProvider {
     }
 
     private static void updateViews(Context context) {
-        ComponentName thisWidget = new ComponentName(context, WeatherWidget.class);
-        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-        PendingIntent pendingIntent = PendingIntent.getService(context, 0, new Intent(Clicks.ACTION_CLICK), 0);
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.weatherwidget);
         WeatherData wd = WeatherData.getInstance();
 
@@ -135,10 +108,13 @@ public class WeatherWidget extends AppWidgetProvider {
         views.setTextViewText(R.id.tv_MaxTemp, wd.getTempString(WeatherData.MAX_TEMP));
         views.setTextViewText(R.id.textTimestamp, getClockTime());
 
+        Intent intent = new Intent(Clicks.ACTION_CLICK, null, context, UpdateService.class);
+        PendingIntent pendingIntent = PendingIntent.getService(context, 0, intent, 0);
         views.setOnClickPendingIntent(R.id.layoutWidget, pendingIntent);
 
         // Instruct the widget manager to update the widget
-        appWidgetManager.updateAppWidget(thisWidget, views);
+        ComponentName thisWidget = new ComponentName(context, WeatherWidget.class);
+        AppWidgetManager.getInstance(context).updateAppWidget(thisWidget, views);
     }
 
     private static String getClockTime() {

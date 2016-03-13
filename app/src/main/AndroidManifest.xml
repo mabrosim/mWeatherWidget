@@ -32,8 +32,7 @@
         </activity>
 
         <receiver
-            android:name=".WeatherWidget"
-            android:exported="true">
+            android:name=".WeatherWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
             </intent-filter>
@@ -44,12 +43,7 @@
         </receiver>
 
         <service
-            android:name=".WeatherWidget$UpdateService"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="fi.mabrosim.weatherwidget.action.CLICK"/>
-                <action android:name="fi.mabrosim.weatherwidget.action.UPDATE_INTERVAL_EXPIRED"/>
-            </intent-filter>
+            android:name=".WeatherWidget$UpdateService">
         </service>
     </application>
 
