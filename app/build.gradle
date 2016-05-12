@@ -1,15 +1,14 @@
 apply plugin: 'com.android.application'
-
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+    buildToolsVersion '23.0.3'
 
     defaultConfig {
         applicationId "fi.mabrosim.weatherwidget"
         minSdkVersion 14
         targetSdkVersion 23
-        versionCode 3
-        versionName "2.0-16w10.7"
+        versionCode 4
+        versionName "2.0-16w19.4"
     }
 
     buildTypes {

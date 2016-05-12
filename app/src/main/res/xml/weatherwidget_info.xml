@@ -4,6 +4,6 @@
                     android:initialLayout="@layout/weatherwidget"
                     android:minHeight="40dp"
                     android:minWidth="40dp"
-                    android:previewImage="@drawable/weather_widget_preview"
+                    android:previewImage="@drawable/app_icon"
                     android:resizeMode="none"
                     android:updatePeriodMillis="1800000"/>
