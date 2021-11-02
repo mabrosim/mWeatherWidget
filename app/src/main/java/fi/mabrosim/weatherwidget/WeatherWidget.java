@@ -1,22 +1,23 @@
 package fi.mabrosim.weatherwidget;
 
-import android.app.IntentService;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
 import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RemoteViews;
 import android.widget.Toast;
+
+import androidx.core.app.JobIntentService;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -37,28 +38,30 @@ public class WeatherWidget extends AppWidgetProvider {
     public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager,
                                           int appWidgetId, Bundle newOptions) {
         updateWeatherWidget(context);
-        super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions);
     }
 
     public static void updateWeatherWidget(Context context) {
-        context.startService(new Intent(context, UpdateService.class));
+        //context.startService(new Intent(context, UpdateService.class));
+        UpdateService.enqueueWork(context, new Intent());
     }
 
-    public static class UpdateService extends IntentService {
-        private static final String  TAG      = "WeatherWidgetUpdateService";
+    public static class Receiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            UpdateService.enqueueWork(context, intent);
+        }
+    }
+
+    public static class UpdateService extends JobIntentService {
         private final        Handler mHandler = new Handler(Looper.getMainLooper());
 
-        public UpdateService() {
-            super(TAG);
+        public static void enqueueWork(Context context, Intent work) {
+            enqueueWork(context, UpdateService.class, 2, work);
         }
 
         @Override
-        public IBinder onBind(Intent intent) {
-            return null;
-        }
-
-        @Override
-        protected void onHandleIntent(Intent intent) {
+        protected void onHandleWork(Intent intent) {
             if (Clicks.ACTION_CLICK.equals(intent.getAction())) {
                 Clicks.handleClickAction(this, mHandler);
             } else {
@@ -109,8 +112,8 @@ public class WeatherWidget extends AppWidgetProvider {
         views.setTextViewText(R.id.tv_MaxTemp, wd.getTempString(WeatherData.MAX_TEMP));
         views.setTextViewText(R.id.textTimestamp, getClockTime());
 
-        Intent intent = new Intent(Clicks.ACTION_CLICK, null, context, UpdateService.class);
-        PendingIntent pendingIntent = PendingIntent.getService(context, 0, intent, 0);
+        Intent intent = new Intent(Clicks.ACTION_CLICK, null, context, Receiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
         views.setOnClickPendingIntent(R.id.layoutWidget, pendingIntent);
 
         // Instruct the widget manager to update the widget

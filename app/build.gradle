@@ -7,7 +7,7 @@ android {
         applicationId "fi.mabrosim.weatherwidget"
         minSdkVersion 14
         targetSdkVersion 31
-        versionCode 7
+        versionCode 8
         versionName "2.0-21w44.2"
     }
 
@@ -21,4 +21,8 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
+}
+
+dependencies {
+    implementation 'androidx.core:core:1.7.0'
 }

@@ -5,6 +5,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
@@ -48,8 +49,11 @@
         </receiver>
 
         <service
-            android:name=".WeatherWidget$UpdateService">
-        </service>
+            android:name=".WeatherWidget$UpdateService"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+
+        <receiver android:name=".WeatherWidget$Receiver"/>
+
     </application>
 
 </manifest>
