@@ -11,6 +11,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -45,7 +46,7 @@ public class WeatherWidget extends AppWidgetProvider {
 
     public static class UpdateService extends IntentService {
         private static final String  TAG      = "WeatherWidgetUpdateService";
-        private final        Handler mHandler = new Handler();
+        private final        Handler mHandler = new Handler(Looper.getMainLooper());
 
         public UpdateService() {
             super(TAG);

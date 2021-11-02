@@ -30,10 +30,6 @@ public final class Clicks {
 
     private static void handleClicks(Context context) {
         switch (sInstance.mClickCount) {
-            case 1: {
-                WeatherWidget.singleClickHandler(context);
-                break;
-            }
             case 2: {
                 WeatherWidget.doubleClickHandler(context);
                 break;
