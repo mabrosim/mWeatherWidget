@@ -9,7 +9,7 @@ It sends GET request to the specified URL and parses needed data from received H
 Widget updates itself in 30 minutes period or when tapped once.
 The application has 2 activities: configuration and URL webview.
 
-The app is availaible on Google Play!
+The app is available on Google Play!
 
 <a href="https://play.google.com/store/apps/details?id=fi.mabrosim.weatherwidget">
    <img alt="Get it on Google Play"
