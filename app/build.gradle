@@ -7,8 +7,8 @@ android {
         applicationId "fi.mabrosim.weatherwidget"
         minSdkVersion 14
         targetSdkVersion 31
-        versionCode 8
-        versionName "2.0-21w44.2"
+        versionCode 9
+        versionName "21w45.3"
     }
 
     buildTypes {

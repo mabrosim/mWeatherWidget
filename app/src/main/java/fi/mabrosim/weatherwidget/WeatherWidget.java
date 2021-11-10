@@ -1,5 +1,6 @@
 package fi.mabrosim.weatherwidget;
 
+import android.annotation.SuppressLint;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
@@ -103,6 +104,7 @@ public class WeatherWidget extends AppWidgetProvider {
         context.startActivity(intent);
     }
 
+    @SuppressLint("UnspecifiedImmutableFlag")
     private static void updateViews(Context context) {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.weatherwidget);
         WeatherData wd = WeatherData.getInstance();
@@ -113,7 +115,12 @@ public class WeatherWidget extends AppWidgetProvider {
         views.setTextViewText(R.id.textTimestamp, getClockTime());
 
         Intent intent = new Intent(Clicks.ACTION_CLICK, null, context, Receiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
+        PendingIntent pendingIntent;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_IMMUTABLE);
+        } else {
+            pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
+        }
         views.setOnClickPendingIntent(R.id.layoutWidget, pendingIntent);
 
         // Instruct the widget manager to update the widget
