@@ -1,8 +1,8 @@
 package fi.mabrosim.weatherwidget;
 
 public class WeatherData {
-    public static final String URL            = "http://weather.willab.fi/weather.html";
-    public static final String PARSE_URL      = "http://weather.willab.fi/weather.xml";
+    public static final String URL            = "https://weather.willab.fi/weather.html";
+    public static final String PARSE_URL      = "https://weather.willab.fi/weather.xml";
     public static final String PREFS_NAME     = "fi.mabrosim.weatherwidget.WeatherWidget";
     public static final String PREF_SHOW_HINT = PREFS_NAME + "_SHOW_HINT";
     public static final int    MIN_TEMP       = 1;
