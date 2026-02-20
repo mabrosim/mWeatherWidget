@@ -15,16 +15,10 @@ public final class Clicks {
     }
 
     static void handleClickAction(final Context context, final Handler handler) {
-        int clickCount = sInstance.mClickCount;
-        sInstance.mClickCount = ++clickCount;
+        sInstance.mClickCount++;
 
-        if (clickCount == 1) {
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    handleClicks(context);
-                }
-            }, CLICK_DELAY_IN_MS);
+        if (sInstance.mClickCount == 1) {
+            handler.postDelayed(() -> handleClicks(context), CLICK_DELAY_IN_MS);
         }
     }
 

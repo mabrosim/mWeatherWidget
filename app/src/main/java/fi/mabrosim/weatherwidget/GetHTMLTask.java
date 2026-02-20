@@ -1,113 +1,92 @@
 package fi.mabrosim.weatherwidget;
 
-import android.os.AsyncTask;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserFactory;
 
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
-import java.nio.charset.Charset;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
+/**
+ * Synchronous task that fetches weather data from the given URL and parses it.
+ * Must be called from a background thread (e.g. inside {@link UpdateWorker#doWork()}).
+ */
+class GetHTMLTask {
 
-class GetHTMLTask extends AsyncTask<String, Void, Void> {
-
-    private final OnTaskCompleted listener;
-
-    public GetHTMLTask(OnTaskCompleted listener) {
-        this.listener = listener;
-    }
-
-    protected Void doInBackground(String... urls) {
-        String output = null;
-
-        for (String url : urls) {
-            output = getOutputFromUrl(url);
-        }
-        if (output != null && !output.isEmpty()) {
-            parseDataFromHtml(output);
-        }
-        return null;
-    }
-
-    @Override
-    protected void onPostExecute(Void aVoid) {
-        listener.onTaskCompleted();
-    }
-
-    private Float parseTempFromHtml(String s, String search_template) {
-        int index = s.indexOf(search_template);
-
-        if (index != -1) {
-            int start = index + search_template.length();
-            Pattern p = Pattern.compile("[-]?[0-9]*\\.?[0-9]+");
-            Matcher m = p.matcher(s.substring(start, start + 5));
-            if (m.find()) {
-                return Float.valueOf(m.group());
+    /**
+     * Fetches the URL and parses weather data from the response.
+     * This is a blocking call — do not call from the main thread.
+     */
+    public void execute(String url) {
+        try {
+            InputStream stream = getHttpConnection(url);
+            if (stream != null) {
+                try {
+                    parseXml(stream);
+                } finally {
+                    stream.close();
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void parseXml(InputStream stream) throws Exception {
+        XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+        XmlPullParser parser = factory.newPullParser();
+        parser.setInput(stream, "UTF-8");
+
+        WeatherData wd = WeatherData.getInstance();
+        int eventType = parser.getEventType();
+
+        while (eventType != XmlPullParser.END_DOCUMENT) {
+            if (eventType == XmlPullParser.START_TAG) {
+                String tag = parser.getName();
+                switch (tag) {
+                    case "tempnow":
+                        wd.setTemp(parseFloatFromText(parser));
+                        break;
+                    case "templo":
+                        wd.setTemp(parseFloatFromText(parser), WeatherData.MIN_TEMP);
+                        break;
+                    case "temphi":
+                        wd.setTemp(parseFloatFromText(parser), WeatherData.MAX_TEMP);
+                        break;
+                }
+            }
+            eventType = parser.next();
+        }
+    }
+
+    private Float parseFloatFromText(XmlPullParser parser) {
+        try {
+            String text = parser.nextText();
+            if (text != null && !text.isEmpty()) {
+                return Float.valueOf(text.trim());
+            }
+        } catch (Exception e) {
+            // ignore parse errors
         }
         return Float.NaN;
     }
 
-    private void parseDataFromHtml(String s) {
-        final String TEMPLATE_TEMP_NOW = "<tempnow unit=\"C\">";
-        final String TEMPLATE_TEMP_MIN = "<templo unit=\"C\">";
-        final String TEMPLATE_TEMP_MAX = "<temphi unit=\"C\">";
-        WeatherData wd = WeatherData.getInstance();
-        wd.setTemp(parseTempFromHtml(s, TEMPLATE_TEMP_NOW));
-        wd.setTemp(parseTempFromHtml(s, TEMPLATE_TEMP_MIN), WeatherData.MIN_TEMP);
-        wd.setTemp(parseTempFromHtml(s, TEMPLATE_TEMP_MAX), WeatherData.MAX_TEMP);
-    }
-
-    private String getOutputFromUrl(String url) {
-        StringBuilder output = new StringBuilder("");
-        try {
-            InputStream stream = getHttpConnection(url);
-            if (stream != null) {
-                BufferedReader buffer = new BufferedReader(
-                        new InputStreamReader(stream, Charset.forName("UTF-8")));
-                String s;
-                while ((s = buffer.readLine()) != null)
-                    output.append(s);
-
-                buffer.close();
-                stream.close();
-            }
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        }
-        return output.toString();
-    }
-
     // Makes HttpURLConnection and returns InputStream
-    private InputStream getHttpConnection(String urlString)
-            throws IOException {
-        InputStream stream = null;
-        URL url = new URL(urlString);
-        URLConnection connection = url.openConnection();
-
+    private InputStream getHttpConnection(String urlString) {
         try {
+            URL url = new URL(urlString);
+            URLConnection connection = url.openConnection();
             HttpURLConnection httpConnection = (HttpURLConnection) connection;
             httpConnection.setRequestMethod("GET");
             httpConnection.connect();
 
             if (httpConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                stream = httpConnection.getInputStream();
+                return httpConnection.getInputStream();
             }
-        } catch (RuntimeException e) {
-            throw e;
         } catch (Exception e) {
-            //ex.printStackTrace();
+            e.printStackTrace();
         }
-        return stream;
-    }
-
-
-    public interface OnTaskCompleted {
-        void onTaskCompleted();
+        return null;
     }
 }

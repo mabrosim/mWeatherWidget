@@ -1,5 +1,7 @@
 package fi.mabrosim.weatherwidget;
 
+import androidx.annotation.NonNull;
+
 public class WeatherData {
     public static final String URL            = "https://weather.willab.fi/weather.html";
     public static final String PARSE_URL      = "https://weather.willab.fi/weather.xml";
@@ -35,7 +37,7 @@ public class WeatherData {
     }
 
     public String getTempString() {
-        return mNowTemp.toString() + " \u00B0C";
+        return mNowTemp + " °C";
     }
 
     public String getTempString(int kind) {
@@ -55,18 +57,19 @@ public class WeatherData {
 
     private static class Temperature {
         private static final String mDefaultString = "--";
-        private Float mTemp;
+        private volatile Float mTemp = Float.NaN;
 
         public void setTemp(Float t) {
             this.mTemp = t;
         }
 
+        @NonNull
         @Override
         public String toString() {
             if (mTemp.isNaN()) {
                 return mDefaultString;
-            } else
-                return String.valueOf(mTemp);
+            }
+            return String.valueOf(mTemp);
         }
     }
 }

@@ -1,14 +1,11 @@
 apply plugin: 'com.android.application'
 android {
-    compileSdkVersion 33
-    buildToolsVersion '33.0.1'
-
     defaultConfig {
         applicationId "fi.mabrosim.weatherwidget"
-        minSdkVersion 14
-        targetSdkVersion 33
-        versionCode 10
-        versionName "23w09.3"
+        minSdkVersion 21
+        targetSdk 36
+        versionCode 11
+        versionName "26w08.5"
     }
 
     buildTypes {
@@ -18,12 +15,14 @@ android {
         release {
             minifyEnabled true
             shrinkResources true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.txt'
         }
     }
     namespace 'fi.mabrosim.weatherwidget'
+    compileSdk 36
 }
 
 dependencies {
-    implementation 'androidx.core:core:1.9.0'
+    implementation 'androidx.core:core-ktx:1.13.1'
+    implementation "androidx.work:work-runtime-ktx:2.9.0"
 }
