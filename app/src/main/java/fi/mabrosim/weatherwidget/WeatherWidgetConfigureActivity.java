@@ -1,11 +1,11 @@
 package fi.mabrosim.weatherwidget;
 
 import android.app.Activity;
+import android.appwidget.AppWidgetManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.CompoundButton;
 import android.widget.Switch;
 
 /**
@@ -31,27 +31,37 @@ public class WeatherWidgetConfigureActivity extends Activity {
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
 
+        // Set the result to CANCELED.  This will cause the widget host to cancel
+        // out of the widget placement if the user presses the back button.
+        setResult(RESULT_CANCELED);
+
+        // Only validate appWidgetId when launched during widget placement
+        Intent intent = getIntent();
+        if (AppWidgetManager.ACTION_APPWIDGET_CONFIGURE.equals(intent.getAction())) {
+            Bundle extras = intent.getExtras();
+            if (extras == null) {
+                finish();
+                return;
+            }
+
+            int appWidgetId = extras.getInt(
+                    AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
+
+            if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
+                finish();
+                return;
+            }
+        }
+
         setContentView(R.layout.weatherwidget_configure);
 
-        findViewById(R.id.button_dismiss).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+        findViewById(R.id.button_dismiss).setOnClickListener(view -> finish());
 
-        Switch switchHint = (Switch) findViewById(R.id.switch1);
+        @SuppressWarnings("UseSwitchCompatOrMaterialCode")
+        Switch switchHint = findViewById(R.id.switch1);
         switchHint.setChecked(isShowHint());
-        switchHint.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                setShowHint(b);
-            }
-        });
+        switchHint.setOnCheckedChangeListener((compoundButton, b) -> setShowHint(b));
 
         setResult(RESULT_OK);
     }
 }
-
-
-
