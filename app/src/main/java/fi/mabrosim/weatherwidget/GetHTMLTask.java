@@ -7,6 +7,10 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * Synchronous task that fetches weather data from the given URL and parses it.
@@ -22,10 +26,8 @@ class GetHTMLTask {
         try {
             InputStream stream = getHttpConnection(url);
             if (stream != null) {
-                try {
+                try (stream) {
                     parseXml(stream);
-                } finally {
-                    stream.close();
                 }
             }
         } catch (Exception e) {
@@ -54,6 +56,12 @@ class GetHTMLTask {
                     case "temphi":
                         wd.setTemp(parseFloatFromText(parser), WeatherData.MAX_TEMP);
                         break;
+                    case "time":
+                        long timeMillis = parseUtcTimeFromText(parser);
+                        if (timeMillis > 0) {
+                            wd.setObservationTimeMillis(timeMillis);
+                        }
+                        break;
                 }
             }
             eventType = parser.next();
@@ -70,6 +78,24 @@ class GetHTMLTask {
             // ignore parse errors
         }
         return Float.NaN;
+    }
+
+    private long parseUtcTimeFromText(XmlPullParser parser) {
+        try {
+            String text = parser.nextText();
+            if (text != null && !text.isEmpty()) {
+                SimpleDateFormat parserFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z", Locale.US);
+                parserFormat.setLenient(false);
+                parserFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+                Date parsed = parserFormat.parse(text.trim());
+                if (parsed != null) {
+                    return parsed.getTime();
+                }
+            }
+        } catch (Exception e) {
+            // ignore parse errors
+        }
+        return -1;
     }
 
     // Makes HttpURLConnection and returns InputStream

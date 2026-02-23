@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.format.DateFormat;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
@@ -19,6 +20,9 @@ import androidx.work.OneTimeWorkRequest;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -120,6 +124,12 @@ public class WeatherWidget extends AppWidgetProvider {
         views.setTextViewText(R.id.tvTempNow, wd.getTempString());
         views.setTextViewText(R.id.tv_MinTemp, wd.getTempString(WeatherData.MIN_TEMP));
         views.setTextViewText(R.id.tv_MaxTemp, wd.getTempString(WeatherData.MAX_TEMP));
+
+        long observationMillis = wd.getObservationTimeMillis();
+        long timeToShow = observationMillis > 0 ? observationMillis : System.currentTimeMillis();
+        String timePattern = DateFormat.is24HourFormat(context) ? "HH:mm" : "hh:mm a";
+        String timeText = new SimpleDateFormat(timePattern, Locale.getDefault()).format(new Date(timeToShow));
+        views.setTextViewText(R.id.textTimestamp, timeText);
 
         Intent intent = new Intent(context, WeatherWidget.class);
         intent.setAction(Clicks.ACTION_CLICK);

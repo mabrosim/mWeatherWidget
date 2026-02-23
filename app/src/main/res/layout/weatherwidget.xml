@@ -60,14 +60,13 @@
             android:textSize="10sp" />
     </LinearLayout>
 
-    <TextClock
+    <TextView
         android:id="@+id/textTimestamp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tvTempNow"
         android:layout_centerHorizontal="true"
-        android:format12Hour="HH:mm"
-        android:format24Hour="HH:mm"
+        android:text=""
         android:textColor="@android:color/darker_gray"
         android:textSize="8sp"/>
 

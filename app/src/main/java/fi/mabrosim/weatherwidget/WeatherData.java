@@ -14,6 +14,7 @@ public class WeatherData {
     private final        Temperature mNowTemp    = new Temperature();
     private final        Temperature mMinTemp    = new Temperature();
     private final        Temperature mMaxTemp    = new Temperature();
+    private volatile     long mObservationTimeMillis = -1;
 
     private WeatherData() {
     }
@@ -53,6 +54,15 @@ public class WeatherData {
         mNowTemp.setTemp(Float.NaN);
         mMinTemp.setTemp(Float.NaN);
         mMaxTemp.setTemp(Float.NaN);
+        mObservationTimeMillis = -1;
+    }
+
+    public void setObservationTimeMillis(long timeMillis) {
+        mObservationTimeMillis = timeMillis;
+    }
+
+    public long getObservationTimeMillis() {
+        return mObservationTimeMillis;
     }
 
     private static class Temperature {
@@ -73,4 +83,3 @@ public class WeatherData {
         }
     }
 }
-
